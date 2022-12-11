@@ -204,6 +204,7 @@ void clear_guess_list() {
         guess_list[i] = NULL;
     }
 }
+
 int start_game() {
     current_line = 0;
 
