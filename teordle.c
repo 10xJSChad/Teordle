@@ -8,7 +8,6 @@
 #define false 0
 #define true 1
 
-
 //Colors
 #define COLOR_GREEN "%c[1;32m"
 #define COLOR_YELLOW "%c[1;33m"
