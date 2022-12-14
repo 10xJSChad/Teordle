@@ -62,11 +62,11 @@ void get_word() {
 
     //Get a random word
     ptr = fopen("words.txt", "r");
+    
     int r = rand() % words_length;
     int i = 0;
     int j = 0;
     int stage = 0;
-
     //Word finding stages:
     //0 = Navigating to index r
     //1 = Navigating to next newline
