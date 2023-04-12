@@ -67,12 +67,13 @@ void get_word() {
     int i = 0;
     int j = 0;
     int stage = 0;
+    
     //Word finding stages:
     //0 = Navigating to index r
     //1 = Navigating to next newline
     //2 = Storing the next word starting from there
     //3 = Done.
-
+    
     ch = fgetc(ptr);
     while (ch != EOF){
         ch = fgetc(ptr);
