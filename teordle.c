@@ -108,7 +108,7 @@ void clear() {
 
     #if defined(_WIN32) || defined(_WIN64)
         system("cls");
-#endif
+    #endif
 }
 
 void string_toupper(char* str) {
