@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h> 
 
-//This is dumb isn't it.
+//stdbool moment
 #define bool int
 #define false 0
 #define true 1
