@@ -230,7 +230,7 @@ void clear_guess_list()
 int start_game()
 {
 
-    //Current attemps
+    // Current attemps
     current_line = 0;
 
     clear();
