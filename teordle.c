@@ -168,7 +168,7 @@ is_input_valid(
         if (!str[i] || !isalpha(str[i])) // yay ascii only!
             return false;
 
-    // forcing NULL at input[5] just made things annoying
+    // forcing NULL at input[WORD_LENGTH] just made things annoying
     // when you accidentally type one letter too many
     // or your brain fails to tell you that a certain word has
     // six letters and not five, and it gets treated as a
