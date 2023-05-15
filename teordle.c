@@ -7,17 +7,10 @@
 #include <string.h>
 #include <time.h>
 
-#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-#define clear_screen() system("clear")
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-#define clear_screen() system("cls")
-#endif
-
 #define COLOR_GREEN "\x1B[32m"
 #define COLOR_YELLOW "\x1B[33m"
 #define COLOR_WHITE "\x1B[37m"
+#define COLOR_DEFAULT_TEXT COLOR_WHITE
 
 #define LETTER_SEPERATOR_STR "_ "
 #define NULL_CHAR '\0'
@@ -36,12 +29,21 @@
 #define PLAYER_WON true
 #define PLAYER_LOST false
 
+#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+#define clear_screen() system("clear")
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#define clear_screen() system("cls")
+#endif
+
 #define assert_print(condition, string) \
     if (!(condition)) {                 \
         printf("%s", string);           \
         terminate(1);                   \
     }
 
+#define enter_game_loop() get_input()
 
 void get_input();
 void terminate(uint8_t exit_code);
@@ -88,7 +90,7 @@ determine_letter_color(
     case IN_WORD_WRONG_INDEX:
         return COLOR_YELLOW;
     default:
-        return COLOR_WHITE;  
+        return COLOR_DEFAULT_TEXT;  
     }
 }
 
@@ -98,7 +100,10 @@ print_letter(
     unsigned char letter,
     char* color)
 {
-    printf("%s%c%s ", color, letter, COLOR_WHITE);
+    // prints the letter in the specified color, then sets the
+    // color back to the default to avoid accidentally printing
+    // characters in colors they should not be printed in.
+    printf("%s%c%s ", color, letter, COLOR_DEFAULT_TEXT);
 }
 
 
@@ -116,7 +121,9 @@ start_label:
 
         // get length of word list
         fseek(file_ptr, 0, SEEK_END);
-        words_length = ftell(file_ptr) - WORD_LENGTH - 1; // subtract to adjust for the last word
+
+        // subtract WORD_LENGTH to avoid starting in the last word
+        words_length = ftell(file_ptr) - WORD_LENGTH - 1;
     }
 
     // really should use a better random function, barely ever see
@@ -124,6 +131,12 @@ start_label:
     fseek(file_ptr, rand() % words_length, SEEK_SET);
 
     // get a word from the list
+    // looking for a newline character to determine the start
+    // of a word is kind of dumb, seeing as we have the
+    // length of each word as well as the length of the word list.
+    //
+    // should be using the power of arithmetic, but unfortunately
+    // I very consistently got the worst math grades in my class.
     while (ch = fgetc(file_ptr)) {
         if (ch == NEWLINE_CHAR) {
             for (size_t i = 0; i < WORD_LENGTH; ++i)
@@ -207,12 +220,8 @@ end_game(
 void
 check_victory()
 {
-
-/*
- * I'm not into the extra indentation level for a while (true) loop
- * so we're getting jiggy with the goto up in here.
- */
-
+// I'm not into the extra indentation level for a while (true) loop
+// so we're getting jiggy with the goto up in here.
 start_label:
     bool guessed_correct_word = strncmp(
         user_input, current_word, WORD_LENGTH) == 0;
@@ -254,6 +263,7 @@ start_game()
 void
 get_input()
 {
+    start_label:
     unsigned char guess[7];
 
     if (fgets(guess , WORD_LENGTH + 2 , stdin)) {
@@ -262,7 +272,7 @@ get_input()
     }
 
     if (strlen(guess) > WORD_LENGTH) 
-        get_input();
+        goto start_label;
 
     if (strcmp(guess , "PLAY") == 0) start_game();
     if (strcmp(guess , "EXIT") == 0) terminate(0);
@@ -281,18 +291,27 @@ int
 main()
 {
     srand(time(NULL));
-    
+
+    printf("%s", COLOR_DEFAULT_TEXT);
     printf("Teordle - Wordle, but in the terminal\n");
     printf("---------------------------------------\n");
     printf("PLAY | EXIT\n");
-    get_input();
-    clear_screen();
 
+    // enter game loop
+    enter_game_loop();
+
+    // should not even be able to reach this,
+    // the game loop will not end until the user
+    // enters the 'EXIT' command, at which point
+    // it will just terminate the program instead of
+    // breaking the loop and returning here
     terminate(0);
 }
 
 
-
+// safer exit(), ensures the word list file is closed
+// it should probably just be loaded into memory or
+// re-opened every time a new word is needed.
 void 
 terminate(
     uint8_t exit_code)
