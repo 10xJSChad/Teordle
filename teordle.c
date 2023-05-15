@@ -110,7 +110,7 @@ print_letter(
 void
 assign_random_word()
 {
-start_label:
+start_label:;
     unsigned char ch;
 
     if (!file_ptr) {
@@ -222,7 +222,7 @@ check_victory()
 {
 // I'm not into the extra indentation level for a while (true) loop
 // so we're getting jiggy with the goto up in here.
-start_label:
+start_label:;
     bool guessed_correct_word = strncmp(
         user_input, current_word, WORD_LENGTH) == 0;
 
@@ -246,7 +246,7 @@ clear_guess_list()
 }
 
 
-int
+void
 start_game()
 {
     // current attempt number
@@ -263,7 +263,7 @@ start_game()
 void
 get_input()
 {
-    start_label:
+    start_label:;
     unsigned char guess[7];
 
     if (fgets(guess , WORD_LENGTH + 2 , stdin)) {
