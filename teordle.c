@@ -114,7 +114,7 @@ start_label:;
     unsigned char ch;
 
     if (!file_ptr) {
-        file_ptr = fopen("words.txt" , "r");
+        file_ptr = fopen("words.txt", "r");
 
         // prints a message and exits if file_ptr is NULL;
         assert_print(file_ptr, "Unable to find or open words.txt");
@@ -266,7 +266,7 @@ get_input()
     start_label:;
     unsigned char guess[7];
 
-    if (fgets(guess , WORD_LENGTH + 2 , stdin)) {
+    if (fgets(guess, WORD_LENGTH + 2, stdin)) {
         guess[strcspn(guess, NEWLINE_STR)] = NULL_CHAR;
         string_toupper(guess);
     }
@@ -274,8 +274,8 @@ get_input()
     if (strlen(guess) > WORD_LENGTH) 
         goto start_label;
 
-    if (strcmp(guess , "PLAY") == 0) start_game();
-    if (strcmp(guess , "EXIT") == 0) terminate(0);
+    if (strcmp(guess, "PLAY") == 0) start_game();
+    if (strcmp(guess, "EXIT") == 0) terminate(0);
 
     if (is_input_valid(guess) && !game_over) {
         for (int i = 0; i < WORD_LENGTH; ++i) {
